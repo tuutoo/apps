@@ -28,35 +28,34 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-test-1-svc
-  namespace: app-test-1
   labels:
     app: app-test-1
-spec:
-  type: ClusterIP
-  ports:
-  - name:  http
-    port:  80
-    targetPort: 80
-    protocol: TCP
-  selector:
-    app: app-test-1
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: app-test-1-ingress
+  name: app-test-1-svc
   namespace: app-test-1
 spec:
-  rules:
-  - host: "app-test-1.k8s.sohot.app"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: app-test-1-svc
-            port:
-              number: 80
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: app-test-1
+  externalTrafficPolicy: Local
+  loadBalancerIP: 192.168.66.202
+  type: LoadBalancer
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: app-test-1
+  namespace: app-test-1
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`app-test-1.k8s.sohot.app`)
+      services:
+        - name: app-test-1-svc
+          port: 80
   tls: {}
