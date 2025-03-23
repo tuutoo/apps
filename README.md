@@ -1,2 +1,2 @@
 # apps
-App
+Project for public apps
