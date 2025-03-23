@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: app-test-1
-        image: nginx
+        image: nginx:latest
         ports:
         - name: web
           containerPort: 80
